@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp20</TargetFrameworks>
     <AssemblyName>SeleniumExtras.PageObjects</AssemblyName>
     <RootNamespace>SeleniumExtras</RootNamespace>
     <AssemblyVersion>3.11.0.0</AssemblyVersion>
@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Selenium.WebDriver" Version="3.10.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

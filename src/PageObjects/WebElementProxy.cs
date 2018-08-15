@@ -15,12 +15,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
+//
 
-#if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium;
 
@@ -81,7 +80,7 @@ namespace SeleniumExtras.PageObjects
         /// <returns>An object used to proxy calls to properties and methods of the list of <see cref="IWebElement"/> objects.</returns>
         public static object CreateProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cacheLookups)
         {
-            return new WebElementProxy(classToProxy, locator, bys, cacheLookups).GetTransparentProxy();
+            return new WebElementProxy(classToProxy, locator, bys, cacheLookups).GetType();
         }
 
         /// <summary>
@@ -92,18 +91,17 @@ namespace SeleniumExtras.PageObjects
         /// information about the method call. </param>
         /// <returns>The message returned by the invoked method, containing the return value and any
         /// out or ref parameters.</returns>
-        public override IMessage Invoke(IMessage msg)
+        protected override object Invoke(MethodInfo msg, object[] args)
         {
             var element = this.Element;
-            IMethodCallMessage methodCallMessage = msg as IMethodCallMessage;
+            MethodInfo methodCallMessage = msg;
 
-            if (typeof(IWrapsElement).IsAssignableFrom((methodCallMessage.MethodBase as MethodInfo).DeclaringType))
-            {
-                return new ReturnMessage(element, null, 0, methodCallMessage.LogicalCallContext, methodCallMessage);
-            }
+            //if (typeof(IWrapsElement).IsAssignableFrom((methodCallMessage).DeclaringType))
+            //{
+            //    return new ReturnMessage(element, null, 0, methodCallMessage.LogicalCallContext, methodCallMessage);
+            //}
 
-            return WebDriverObjectProxy.InvokeMethod(methodCallMessage, element);
+            return WebDriverObjectProxy.InvokeMethod(methodCallMessage, methodCallMessage.GetParameters());
         }
     }
 }
-#endif

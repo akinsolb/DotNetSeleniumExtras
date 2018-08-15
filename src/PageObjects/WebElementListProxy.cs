@@ -16,11 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-#if !NETSTANDARD2_0
+//#if !NETSTANDARD2_0
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
+using System.Reflection;
 using OpenQA.Selenium;
 
 namespace SeleniumExtras.PageObjects
@@ -41,7 +41,7 @@ namespace SeleniumExtras.PageObjects
         /// <param name="bys">The list of methods by which to search for the elements.</param>
         /// <param name="cache"><see langword="true"/> to cache the lookup to the element; otherwise, <see langword="false"/>.</param>
         private WebElementListProxy(Type typeToBeProxied, IElementLocator locator, IEnumerable<By> bys, bool cache)
-            : base(typeToBeProxied, locator, bys, cache)
+        : base(typeToBeProxied, locator, bys, cache)
         {
         }
 
@@ -76,7 +76,7 @@ namespace SeleniumExtras.PageObjects
         /// list of <see cref="IWebElement"/> objects.</returns>
         public static object CreateProxy(Type classToProxy, IElementLocator locator, IEnumerable<By> bys, bool cacheLookups)
         {
-            return new WebElementListProxy(classToProxy, locator, bys, cacheLookups).GetTransparentProxy();
+            return new WebElementListProxy(classToProxy, locator, bys, cacheLookups).GetType();
         }
 
         /// <summary>
@@ -87,11 +87,11 @@ namespace SeleniumExtras.PageObjects
         /// information about the method call. </param>
         /// <returns>The message returned by the invoked method, containing the return value and any
         /// out or ref parameters.</returns>
-        public override IMessage Invoke(IMessage msg)
+        protected override object Invoke(MethodInfo msg, object[] args)
         {
             var elements = this.ElementList;
-            return WebDriverObjectProxy.InvokeMethod(msg as IMethodCallMessage, elements);
+            return WebDriverObjectProxy.InvokeMethod(msg, args);
         }
     }
 }
-#endif
+//#endif
